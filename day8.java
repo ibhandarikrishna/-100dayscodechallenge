@@ -1,3 +1,4 @@
+//day 8
 public class Solution {
 
 static int B,H;
