@@ -1,0 +1,49 @@
+from collections import defaultdict
+
+def beauty(n, m, S, X, Y):
+    # Create an adjacency list to represent the directed graph
+    graph = defaultdict(list)
+    for i in range(m):
+        u, v = X[i], Y[i]
+        graph[u].append(v)
+    
+    max_beauty = -1
+    
+    def dfs(node, freq):
+        nonlocal max_beauty
+        freq[S[node - 1]] += 1  # Increment the frequency of the alphabet for the current node
+        
+        # Find the most frequently occurring alphabet and its frequency
+        max_freq = max(freq.values())
+        
+        # Calculate the beauty of the current path
+        path_beauty = max_freq
+        
+        # Update the maximum beauty value
+        max_beauty = max(max_beauty, path_beauty)
+        
+        # Recursively explore neighbors
+        for neighbor in graph[node]:
+            dfs(neighbor, freq)
+        
+        # Backtrack: Decrement the frequency of the alphabet for the current node
+        freq[S[node - 1]] -= 1
+    
+    # Start DFS from each node
+    try:
+        for start_node in range(1, n + 1):
+            freq = defaultdict(int)  # Initialize character frequency for each DFS traversal
+            dfs(start_node, freq)
+        return max_beauty
+    except:
+        return -1
+
+# Input example:
+n = 5
+m = 4
+S = "abaca"
+X = [1, 2, 1, 4]
+Y = [2, 1, 4, 5]
+
+result = beauty(n, m, S, X, Y)
+print(result)
