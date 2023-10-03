@@ -1,0 +1,101 @@
+You are supposed to write production ready code with Proper Unit Test Cases, Modularizaton etc.
+
+You need to write your test cases under user package in test folder. One sample test is created under same package for reference. Your code will be evaluated on the basis of code coverage, Code Quality, Best Practices and Bugs.
+
+NOTE: Here, we use Python3.7
+
+**PROBLEM:
+
+Given a directed graph with N nodes and M edges. Each node is associated with lowercase english alphabet. Beauty of a path is defined as the number of most frequently occurring alphabet. Find the most beautiful path and return the maximum
+
+beauty value it has.
+
+**CONSTRAINTS:**
+
+1 < N,M < 300000
+
+**FUNCTION DESCRIPTION:**
+
+Complete the function beauty in code. Function must Return an integer, the beauty of most beautiful path. If the value is very large return -1.
+
+Function beauty has the following parameter(s):
+
+n: integer, number of nodes
+m: integer, number of directed edges 
+S: string of length n where ith alphabet denotes the alphabets associated with ith node 
+X: list of length m
+Y:list of length m
+
+X, Y: two integers arrays of length M, pair Xi, Yi denotes there is an edge from node Xi to Yi.
+
+Output
+Return an integer, the beauty of most beautiful path. If the value is very large return -1.
+
+**EXAMPLE:**
+Input:-
+
+n: 5
+m: 4
+s: abaca
+x: [ 1, 1, 3, 4]
+y: [ 2, 3, 4, 5]
+
+
+*Solution*
+
+
+from collections import defaultdict
+
+def beauty(n, m, S, X, Y):
+    # Create an adjacency list to represent the directed graph
+    graph = defaultdict(list)
+    for i in range(m):
+        u, v = X[i], Y[i]
+        graph[u].append(v)
+    
+    max_beauty = -1
+    
+    def dfs(node, freq):
+        nonlocal max_beauty
+        freq[S[node - 1]] += 1  # Increment the frequency of the alphabet for the current node
+        
+        # Find the most frequently occurring alphabet and its frequency
+        max_freq = max(freq.values())
+        
+        # Calculate the beauty of the current path
+        path_beauty = max_freq
+        
+        # Update the maximum beauty value
+        max_beauty = max(max_beauty, path_beauty)
+        
+        # Recursively explore neighbors
+        for neighbor in graph[node]:
+            dfs(neighbor, freq)
+        
+        # Backtrack: Decrement the frequency of the alphabet for the current node
+        freq[S[node - 1]] -= 1
+    
+    # Start DFS from each node
+    try:
+        for start_node in range(1, n + 1):
+            freq = defaultdict(int)  # Initialize character frequency for each DFS traversal
+            dfs(start_node, freq)
+        return max_beauty
+    except:
+        return -1
+
+# Input example:
+n = 5
+m = 4
+S = "abaca"
+X = [1, 2, 1, 4]
+Y = [2, 1, 4, 5]
+
+# n = 6
+# m = 6
+# S = "xzyabc"
+# X = [1, 3, 2, 5, 4, 6]
+# Y = [2, 1, 3, 4, 3, 4]
+
+result = beauty(n, m, S, X, Y)
+print(result)
